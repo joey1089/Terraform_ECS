@@ -3,6 +3,29 @@
 provider "aws" {
   region = "us-east-1"
 }
+<<<<<<< HEAD
+
+resource "aws_ecs_cluster" "ecs_cluster" {
+  name = "example-cluster"
+}
+
+resource "aws_ecs_task_definition" "ecs_cluster_task" {
+  family = "example-task-definition"
+
+  container_definitions = <<EOF
+[
+  {
+    "name": "centos-container",
+    "image": "centos:7",
+    "cpu": 1024,
+    "memory": 2048,
+    "portMappings": [
+      {
+        "containerPort": 80,
+        "hostPort": 80
+      }
+    ]
+=======
 
 resource "aws_ecs_cluster" "example" {
   name = "example-cluster"
@@ -57,9 +80,44 @@ resource "aws_security_group" "example" {
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+>>>>>>> main
   }
+]
+EOF
 }
 
+<<<<<<< HEAD
+resource "aws_ecs_service" "ecs_service" {
+  name            = "ecs-service"
+  task_definition = aws_ecs_task_definition.ecs_cluster_task.arn
+  cluster         = aws_ecs_cluster.example.id
+  desired_count   = 1
+}
+
+
+
+
+
+
+
+
+
+# resource "aws_ecs_cluster" "cluster" {
+#   name = "project-ecs-cluster"
+
+#   capacity_providers = ["FARGATE_SPOT", "FARGATE"]
+
+#   default_capacity_provider_strategy {
+#     capacity_provider = "FARGATE_SPOT"
+#   }
+
+#   setting {
+#     name  = "containerInsights"
+#     value = "disabled"
+#   }
+# }
+
+=======
 resource "aws_subnet" "example" {
   count = 2
 
@@ -87,6 +145,7 @@ resource "aws_vpc" "example" {
 #   }
 # }
 
+>>>>>>> main
 # module "ecs-fargate" {
 #   source  = "umotif-public/ecs-fargate/aws"
 #   version = "~> 6.1.0"
@@ -122,4 +181,9 @@ resource "aws_vpc" "example" {
 #     Environment = "test"
 #     Project     = "Test"
 #   }
+<<<<<<< HEAD
 # }
+
+=======
+# }
+>>>>>>> main
