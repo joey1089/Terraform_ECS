@@ -2,14 +2,16 @@
 
 provider "aws" {
   region = "us-east-1"
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
 }
 
-resource "aws_ecs_cluster" "example" {
-  name = "example-cluster"
+resource "aws_ecs_cluster" "ecs_cluster" {
+  name = "ecs-cluster"
 }
 
-resource "aws_ecs_task_definition" "example" {
-  family = "example-task-definition"
+resource "aws_ecs_task_definition" "ecs_task_definition" {
+  family = "ecs-task-definition"
 
   container_definitions = <<DEFINITION
 [
@@ -29,27 +31,38 @@ resource "aws_ecs_task_definition" "example" {
 DEFINITION
 }
 
-resource "aws_ecs_service" "example" {
-  name            = "example-service"
-  cluster         = aws_ecs_cluster.example.id
-  task_definition = aws_ecs_task_definition.example.arn
+resource "aws_ecs_service" "ecs_service" {
+  name            = "ecs-service"
+  cluster         = aws_ecs_cluster.ecs_cluster.id
+  task_definition = aws_ecs_task_definition.ecs_task_definition.arn
   desired_count   = 1
 
-  launch_type = "FARGATE"
+  launch_type = "EC2"
 
   network_configuration {
-    assign_public_ip = true
-
+    assign_public_ip = false
     security_groups = [
-      aws_security_group.example.id
+      aws_security_group.ecs_sg.id
     ]
-
-    subnets = aws_subnet.example.*.id
+    subnets = aws_subnet.private_subnet.*.id
   }
 }
 
-resource "aws_security_group" "example" {
-  name        = "example-security-group"
+
+resource "aws_vpc" "vpc_ecs" {
+  cidr_block = "10.0.0.0/16"
+}
+
+
+resource "aws_subnet" "private_subnet" {
+  # count = 2
+  # cidr_block = "10.0.${count.index + 1}.0/24"
+  cidr_block = "10.0.2.0/24"
+  vpc_id     = aws_vpc.vpc_ecs.id
+}
+
+resource "aws_security_group" "ecs_sg" {
+  name        = "ecs-security-group"
   description = "Allow HTTP traffic"
 
   ingress {
@@ -58,19 +71,14 @@ resource "aws_security_group" "example" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = -1
+    cidr_blocks = [ "0.0.0.0/0" ]
+  } 
 }
-
-resource "aws_subnet" "example" {
-  count = 2
-
-  cidr_block = "10.0.${count.index + 1}.0/24"
-  vpc_id     = aws_vpc.example.id
-}
-
-resource "aws_vpc" "example" {
-  cidr_block = "10.0.0.0/16"
-}
-
 
 # resource "aws_ecs_cluster" "cluster" {
 #   name = "project-ecs-cluster"
