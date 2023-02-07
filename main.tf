@@ -7,11 +7,11 @@ provider "aws" {
 }
 
 resource "aws_ecs_cluster" "ecs_cluster" {
-  name = "ecs-cluster"
+  name = "example-cluster"
 }
 
-resource "aws_ecs_task_definition" "ecs_task_definition" {
-  family = "ecs-task-definition"
+resource "aws_ecs_task_definition" "ecs_cluster_task" {
+  family = "example-task-definition"
 
   container_definitions    = <<DEFINITION
 [
@@ -58,11 +58,8 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_ecs_service" "ecs_service" {
-  name            = "ecs-service"
-  cluster         = aws_ecs_cluster.ecs_cluster.id
-  task_definition = aws_ecs_task_definition.ecs_task_definition.arn
-  desired_count   = 1
+resource "aws_subnet" "example" {
+  count = 2
 
   launch_type = "EC2"
   # network_mode = "awsvpc"
@@ -76,8 +73,7 @@ resource "aws_ecs_service" "ecs_service" {
   }
 }
 
-
-resource "aws_vpc" "vpc_ecs" {
+resource "aws_vpc" "example" {
   cidr_block = "10.0.0.0/16"
 }
 
@@ -124,6 +120,7 @@ resource "aws_security_group" "ecs_sg" {
 #   }
 # }
 
+
 # module "ecs-fargate" {
 #   source  = "umotif-public/ecs-fargate/aws"
 #   version = "~> 6.1.0"
@@ -160,3 +157,4 @@ resource "aws_security_group" "ecs_sg" {
 #     Project     = "Test"
 #   }
 # }
+
