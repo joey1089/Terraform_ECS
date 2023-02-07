@@ -1,5 +1,5 @@
 
 
 
-aws_access_key = "AKIAZGSUBUS6XVCUKPVD"
-aws_secret_key = "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"
+aws_access_key = "AKIA4YOR5PXK37OQPHQG"
+aws_secret_key = "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"
