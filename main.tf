@@ -5,6 +5,29 @@ provider "aws" {
   access_key = var.aws_access_key
   secret_key = var.aws_secret_key
 }
+<<<<<<< HEAD
+
+resource "aws_ecs_cluster" "ecs_cluster" {
+  name = "example-cluster"
+}
+
+resource "aws_ecs_task_definition" "ecs_cluster_task" {
+  family = "example-task-definition"
+
+  container_definitions = <<EOF
+[
+  {
+    "name": "centos-container",
+    "image": "centos:7",
+    "cpu": 1024,
+    "memory": 2048,
+    "portMappings": [
+      {
+        "containerPort": 80,
+        "hostPort": 80
+      }
+    ]
+=======
 
 resource "aws_ecs_cluster" "ecs_cluster" {
   name = "ecs-cluster"
@@ -70,14 +93,19 @@ resource "aws_security_group" "ecs_sg" {
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+>>>>>>> main
   }
+}
 
-  egress {
-    from_port = 0
-    to_port = 0
-    protocol = -1
-    cidr_blocks = [ "0.0.0.0/0" ]
-  } 
+resource "aws_subnet" "example" {
+  count = 2
+
+  cidr_block = "10.0.${count.index + 1}.0/24"
+  vpc_id     = aws_vpc.example.id
+}
+
+resource "aws_vpc" "example" {
+  cidr_block = "10.0.0.0/16"
 }
 
 # resource "aws_ecs_cluster" "cluster" {
@@ -95,6 +123,7 @@ resource "aws_security_group" "ecs_sg" {
 #   }
 # }
 
+>>>>>>> main
 # module "ecs-fargate" {
 #   source  = "umotif-public/ecs-fargate/aws"
 #   version = "~> 6.1.0"
@@ -130,4 +159,9 @@ resource "aws_security_group" "ecs_sg" {
 #     Environment = "test"
 #     Project     = "Test"
 #   }
+<<<<<<< HEAD
 # }
+
+=======
+# }
+>>>>>>> main
