@@ -2,8 +2,9 @@
 
 provider "aws" {
   region = "us-east-1"
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
 }
-<<<<<<< HEAD
 
 resource "aws_ecs_cluster" "ecs_cluster" {
   name = "example-cluster"
@@ -25,99 +26,9 @@ resource "aws_ecs_task_definition" "ecs_cluster_task" {
         "hostPort": 80
       }
     ]
-=======
-
-resource "aws_ecs_cluster" "example" {
-  name = "example-cluster"
-}
-
-resource "aws_ecs_task_definition" "example" {
-  family = "example-task-definition"
-
-  container_definitions = <<DEFINITION
-[
-  {
-    "name": "example-container",
-    "image": "registry.centos.org/centos-stream/9/os/x86_64/images/centos-stream-9-20221116.0.x86_64.qcow2",
-    "memory": 1028,
-    "cpu": 512,
-    "portMappings": [
-      {
-        "containerPort": 80,
-        "hostPort": 80
-      }
-    ]
-  }
-]
-DEFINITION
-}
-
-resource "aws_ecs_service" "example" {
-  name            = "example-service"
-  cluster         = aws_ecs_cluster.example.id
-  task_definition = aws_ecs_task_definition.example.arn
-  desired_count   = 1
-
-  launch_type = "FARGATE"
-
-  network_configuration {
-    assign_public_ip = true
-
-    security_groups = [
-      aws_security_group.example.id
-    ]
-
-    subnets = aws_subnet.example.*.id
   }
 }
 
-resource "aws_security_group" "example" {
-  name        = "example-security-group"
-  description = "Allow HTTP traffic"
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
->>>>>>> main
-  }
-]
-EOF
-}
-
-<<<<<<< HEAD
-resource "aws_ecs_service" "ecs_service" {
-  name            = "ecs-service"
-  task_definition = aws_ecs_task_definition.ecs_cluster_task.arn
-  cluster         = aws_ecs_cluster.example.id
-  desired_count   = 1
-}
-
-
-
-
-
-
-
-
-
-# resource "aws_ecs_cluster" "cluster" {
-#   name = "project-ecs-cluster"
-
-#   capacity_providers = ["FARGATE_SPOT", "FARGATE"]
-
-#   default_capacity_provider_strategy {
-#     capacity_provider = "FARGATE_SPOT"
-#   }
-
-#   setting {
-#     name  = "containerInsights"
-#     value = "disabled"
-#   }
-# }
-
-=======
 resource "aws_subnet" "example" {
   count = 2
 
@@ -128,7 +39,6 @@ resource "aws_subnet" "example" {
 resource "aws_vpc" "example" {
   cidr_block = "10.0.0.0/16"
 }
-
 
 # resource "aws_ecs_cluster" "cluster" {
 #   name = "project-ecs-cluster"
@@ -181,9 +91,5 @@ resource "aws_vpc" "example" {
 #     Environment = "test"
 #     Project     = "Test"
 #   }
-<<<<<<< HEAD
 # }
 
-=======
-# }
->>>>>>> main
