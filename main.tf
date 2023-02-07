@@ -5,7 +5,6 @@ provider "aws" {
   access_key = var.aws_access_key
   secret_key = var.aws_secret_key
 }
-<<<<<<< HEAD
 
 resource "aws_ecs_cluster" "ecs_cluster" {
   name = "example-cluster"
@@ -27,73 +26,6 @@ resource "aws_ecs_task_definition" "ecs_cluster_task" {
         "hostPort": 80
       }
     ]
-=======
-
-resource "aws_ecs_cluster" "ecs_cluster" {
-  name = "ecs-cluster"
-}
-
-resource "aws_ecs_task_definition" "ecs_task_definition" {
-  family = "ecs-task-definition"
-
-  container_definitions = <<DEFINITION
-[
-  {
-    "name": "example-container",
-    "image": "registry.centos.org/centos-stream/9/os/x86_64/images/centos-stream-9-20221116.0.x86_64.qcow2",
-    "memory": 1028,
-    "cpu": 512,
-    "portMappings": [
-      {
-        "containerPort": 80,
-        "hostPort": 80
-      }
-    ]
-  }
-]
-DEFINITION
-}
-
-resource "aws_ecs_service" "ecs_service" {
-  name            = "ecs-service"
-  cluster         = aws_ecs_cluster.ecs_cluster.id
-  task_definition = aws_ecs_task_definition.ecs_task_definition.arn
-  desired_count   = 1
-
-  launch_type = "EC2"
-
-  network_configuration {
-    assign_public_ip = false
-    security_groups = [
-      aws_security_group.ecs_sg.id
-    ]
-    subnets = aws_subnet.private_subnet.*.id
-  }
-}
-
-
-resource "aws_vpc" "vpc_ecs" {
-  cidr_block = "10.0.0.0/16"
-}
-
-
-resource "aws_subnet" "private_subnet" {
-  # count = 2
-  # cidr_block = "10.0.${count.index + 1}.0/24"
-  cidr_block = "10.0.2.0/24"
-  vpc_id     = aws_vpc.vpc_ecs.id
-}
-
-resource "aws_security_group" "ecs_sg" {
-  name        = "ecs-security-group"
-  description = "Allow HTTP traffic"
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
->>>>>>> main
   }
 }
 
@@ -159,9 +91,5 @@ resource "aws_vpc" "example" {
 #     Environment = "test"
 #     Project     = "Test"
 #   }
-<<<<<<< HEAD
 # }
 
-=======
-# }
->>>>>>> main
